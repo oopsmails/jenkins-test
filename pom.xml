@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.1.5.RELEASE</version>
+    </parent>
+
+    <groupId>com.oopsmails.jenkins.app</groupId>
+    <artifactId>jenkins-app</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <properties>
+        <spring-boot.version>2.1.3.RELEASE</spring-boot.version>
+        <spring-kafka.version>2.2.2.RELEASE</spring-kafka.version>
+        <jackson.version>2.9.7</jackson.version>
+        <rest-assured.version>3.1.0</rest-assured.version>
+        <lombok.version>1.16.8</lombok.version>
+        <!-- plugins -->
+        <java.version>1.8</java.version>
+        <maven-surefire-plugin.version>2.19.1</maven-surefire-plugin.version>
+        <maven-compiler-plugin.version>3.7.0</maven-compiler-plugin.version>
+        <thin.version>1.0.21.RELEASE</thin.version>
+    </properties>
+
+    <modules>
+        <module>springboot2-app-all-kafka</module>
+        <module>springboot2-app-all-kafka-web</module>
+        <module>springboot2-app-all-backendmock</module>
+        <module>spring-boot-app-all-java-generic</module>
+    </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>${spring-boot.version}</version>
+                    <configuration>
+                        <mainClass>${start-class}</mainClass>
+                        <!-- this is necessary as we're not using the Boot parent -->
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven-surefire-plugin.version}</version>
+                <configuration>
+                    <forkCount>3</forkCount>
+                    <reuseForks>true</reuseForks>
+                    <excludes>
+                        <exclude>**/*IntegrationTest.java</exclude>
+                        <exclude>**/*LongRunningUnitTest.java</exclude>
+                        <exclude>**/*ManualTest.java</exclude>
+                        <exclude>**/JdbcTest.java</exclude>
+                        <exclude>**/*LiveTest.java</exclude>
+                    </excludes>
+
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>thin-jar</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-maven-plugin</artifactId>
+                        <dependencies>
+                            <!-- The following enables the "thin jar" deployment option. -->
+                            <dependency>
+                                <groupId>org.springframework.boot.experimental</groupId>
+                                <artifactId>spring-boot-thin-layout</artifactId>
+                                <version>${thin.version}</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>
